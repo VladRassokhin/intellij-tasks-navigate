@@ -1,5 +1,5 @@
-
-h1. Copyright
+Copyright
+=========
 ```text
 Copyright 2000-2013 JetBrains s.r.o.
 
@@ -16,19 +16,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-h1. Usage
+Usage
+=====
 
-* Assume you have annotation
+Assume you have annotation
 ```java
 package util;
+
 import java.lang.annotation.*;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface TestFor {
     String[] issues() default {};
 }
 ```
-* And you use it to annotate test classes or methods.
+
+And you use it to annotate test classes or methods.
 ```java
 package tests;
 
@@ -40,9 +44,11 @@ public class TestClass {
 }
 ```
 
-* Ensure you have Tasks server defined at Project Settings -> Tasks -> Servers (http://youtrack.jetbrains.com/ in my case)
-* Define you annotation in Project Settings -> Tasks -> Navigation
-  as "util.TestFor#issues"
+Ensure you have Tasks server defined at Project Settings -> Tasks -> Servers (http://youtrack.jetbrains.com/ in my case)
 
-* Now, "Go to Definition" on string literal "IDEA-40484" will open http://youtrack.jetbrains.com/issue/IDEA-40484 in your browser.
-* Also quick documentation for string literals available.
+Define you annotation in Project Settings -> Tasks -> Navigation 
+    as "util.TestFor#issues"
+
+Now, "Go to Definition" on string literal "IDEA-40484" will open http://youtrack.jetbrains.com/issue/IDEA-40484 in your browser.
+
+Also quick documentation for string literals available.
