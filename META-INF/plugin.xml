@@ -7,36 +7,10 @@
   <depends>com.intellij.tasks</depends>
 
   <description><![CDATA[
-      This plugin adds support for opening tasks from annotations values. <br/>
-      List of annotations should be customized at Project Settings -&gt; Tasks -&gt; Navigation. <br/>
-
-      Sample: <br/>
-      You have annotation <br/>
-      <code><pre>
-package util;
-import java.lang.annotation.*;
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface TestFor {
-    String[] issues() default {};
-}
-      </pre></code> <br/>
-      And you use it to annotate test classes or methods. <br/>
-      <code><pre>
-package tests;
-
-public class TestClass {
-    @util.TestFor(issues = {"IDEA-107660"})
-    public String testSomething() {
-        return myName;
-    }
-}
-      </pre></code> <br/>
-      Assume you have "util.TestFor#issues" defined in settings.<br/>
-      And you also should have Tasks Server defined for issues resolving. (youtrack.jetbrains.com in my case)<br/>
-
-      Now, "Go to Definition" on string literal "IDEA-107660" will open http://youtrack.jetbrains.com/issue/IDEA-107660 in your browser.<br/>
-      Also documentation for string literals provides some issue information.<br/>
+      Provides support for navigation to web (in browser) from annotation's string elements (task id's).<br/>
+      Also code completion for such string elements provided.
+      <br/>
+      List of annotations should be customized at Project Settings -&gt; Tasks -&gt; Navigation.<br/>
       ]]></description>
 
   <change-notes><![CDATA[
