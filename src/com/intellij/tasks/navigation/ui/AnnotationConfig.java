@@ -52,11 +52,31 @@ public class AnnotationConfig {
   }
 
   public String getPresentableName() {
-    return myAnnotation + "#" + myElement;
+    return String.valueOf(myAnnotation) + "#" + String.valueOf(myElement);
   }
 
   public void copyFrom(AnnotationConfig config) {
     this.myAnnotation = config.myAnnotation;
     this.myElement = config.myElement;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    AnnotationConfig that = (AnnotationConfig) o;
+
+    if (myAnnotation != null ? !myAnnotation.equals(that.myAnnotation) : that.myAnnotation != null) return false;
+    if (myElement != null ? !myElement.equals(that.myElement) : that.myElement != null) return false;
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = myAnnotation != null ? myAnnotation.hashCode() : 0;
+    result = 31 * result + (myElement != null ? myElement.hashCode() : 0);
+    return result;
   }
 }

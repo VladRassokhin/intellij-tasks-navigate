@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>org.intellij.tasks.navigation</id>
   <name>Tasks Navigation</name>
-  <version>0.2.1</version>
+  <version>0.2.2</version>
   <vendor email="Vladislav.Rassokhin@jetbrains.com">Vladislav Rassokhin from JetBrains</vendor>
 
   <depends>com.intellij.tasks</depends>
@@ -14,6 +14,8 @@
       ]]></description>
 
   <change-notes><![CDATA[
+      <h4>0.2.2</h4>
+      <p>Minor fix in settings.</p>
       <h4>0.2.1</h4>
       <p>Documentation updated.</p>
       <h4>0.2</h4>
