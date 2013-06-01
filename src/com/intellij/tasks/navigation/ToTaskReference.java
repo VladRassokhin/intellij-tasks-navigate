@@ -19,8 +19,8 @@ package com.intellij.tasks.navigation;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLiteralExpression;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.CachedValue;
@@ -44,7 +44,7 @@ import java.util.Map;
 /**
  * @author Vladislav.Rassokhin
  */
-class NavigableTaskReference extends PsiReferenceBase<PsiLiteralExpression> {
+class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
 
   private static final Key<CachedValue<Map<String, TaskPsiElement>>> ISSUE_REFERENCE_CACHE = Key.create("ISSUE_REFERENCE_CACHE");
   private static final CachedValueProvider<Map<String, TaskPsiElement>> CACHED_VALUE_PROVIDER = new CachedValueProvider<Map<String, TaskPsiElement>>() {
@@ -55,12 +55,24 @@ class NavigableTaskReference extends PsiReferenceBase<PsiLiteralExpression> {
     }
   };
 
-  public NavigableTaskReference(@NotNull final PsiLiteralExpression element) {
-    super(element, true);
+  ToTaskReference(T element, TextRange range, boolean soft) {
+    super(element, range, soft);
+  }
+
+  ToTaskReference(T element, TextRange range) {
+    super(element, range);
+  }
+
+  ToTaskReference(T element, boolean soft) {
+    super(element, soft);
+  }
+
+  ToTaskReference(@NotNull T element) {
+    super(element);
   }
 
   @Nullable
-  private static Task getTask(@NotNull final String id, @NotNull final TaskManager manager) {
+  static Task getTask(@NotNull final String id, @NotNull final TaskManager manager) {
     for (Task task : manager.getCachedIssues(true)) {
       if (id.equals(task.getId())) {
         LocalTask localTask = manager.findTask(id);
