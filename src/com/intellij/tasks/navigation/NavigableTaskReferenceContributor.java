@@ -55,7 +55,6 @@ public class NavigableTaskReferenceContributor extends PsiReferenceContributor {
         return new PsiLiteralExpressionToTaskReference[]{new PsiLiteralExpressionToTaskReference((PsiLiteralExpression) element)};
       }
     });
-    registrar.registerReferenceProvider(PlatformPatterns.psiElement(PsiComment.class), new TaskInPsiCommentReferenceProvider());
   }
 
   private static class TaskAnnotationFilter implements ElementFilter {

@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>org.intellij.tasks.navigation</id>
   <name>Tasks Navigation</name>
-  <version>0.2.2</version>
+  <version>0.3</version>
   <vendor email="Vladislav.Rassokhin@jetbrains.com">Vladislav Rassokhin from JetBrains</vendor>
 
   <depends>com.intellij.tasks</depends>
@@ -10,10 +10,13 @@
       Provides support for navigation to web (in browser) from annotation's string elements (task id's).<br/>
       Also code completion for such string elements provided.
       <br/>
+      Also provides navigation to tasks from comments.
       List of annotations should be customized at Project Settings -&gt; Tasks -&gt; Navigation.<br/>
       ]]></description>
 
   <change-notes><![CDATA[
+      <h4>0.3</h4>
+      <p>Support for navigation to tasks from comments.</p>
       <h4>0.2.2</h4>
       <p>Minor fix in settings.</p>
       <h4>0.2.1</h4>
@@ -29,6 +32,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <psi.referenceContributor language="JAVA" implementation="com.intellij.tasks.navigation.NavigableTaskReferenceContributor"/>
+    <psi.referenceContributor implementation="com.intellij.tasks.navigation.PsiCommentToTaskReferenceContributor"/>
     <lang.documentationProvider language="JAVA" implementationClass="com.intellij.tasks.navigation.NavigableTaskDocumentationProvider"/>
 
     <projectConfigurable instance="com.intellij.tasks.navigation.ui.TaskNavigationConfigurable"
