@@ -28,16 +28,31 @@ class TaskInPsiCommentReferenceProvider extends PsiReferenceProvider {
     if (text== null) {
       return PsiReference.EMPTY_ARRAY;
     }
-    final List<PsiCommentToTaskReference> references = new ArrayList<PsiCommentToTaskReference>();
+    final List<TextRange> ranges = new ArrayList<TextRange>();
     final TaskRepository[] repositories = TaskManager.getManager(comment.getProject()).getAllRepositories();
     for (TaskRepository repository : repositories) {
-      final String id = repository.extractId(text);
-      if (id != null) {
-        final int i = text.indexOf(id);
-        if (i >= 0) {
-          references.add(new PsiCommentToTaskReference(comment, new TextRange(i, i + id.length())));
+      int prev = 0;
+      String toCheck = text;
+      while (true) {
+        final String id = repository.extractId(toCheck);
+        if (id == null) {
+          break;
         }
+        int i = toCheck.indexOf(id);
+        if (i < 0) {
+          break;
+        }
+        ranges.add(new TextRange(prev + i, prev + i + id.length()));
+        prev += i + id.length();
+        toCheck = text.substring(prev);
       }
+    }
+
+    // TODO: Check intersecting ranges (between many TaskRepositories)
+
+    final List<PsiCommentToTaskReference> references = new ArrayList<PsiCommentToTaskReference>();
+    for (TextRange range : ranges) {
+      references.add(new PsiCommentToTaskReference(comment, range));
     }
     if (references.isEmpty()) {
       return PsiReference.EMPTY_ARRAY;
