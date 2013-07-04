@@ -1,5 +1,6 @@
 package com.intellij.tasks.navigation;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
@@ -24,6 +25,10 @@ class TaskInPsiCommentReferenceProvider extends PsiReferenceProvider {
       return PsiReference.EMPTY_ARRAY;
     }
     final PsiComment comment = (PsiComment) element;
+    final TaskNavigationConfig config = ServiceManager.getService(comment.getProject(), TaskNavigationConfig.class);
+    if (!config.searchInComments) {
+      return PsiReference.EMPTY_ARRAY;
+    }
     final String text = comment.getText();
     if (text== null) {
       return PsiReference.EMPTY_ARRAY;

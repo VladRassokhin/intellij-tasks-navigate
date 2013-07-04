@@ -36,6 +36,9 @@ import java.util.List;
     name = "TaskNavigationConfig",
     storages = {@Storage(file = StoragePathMacros.PROJECT_FILE)})
 public class TaskNavigationConfig implements PersistentStateComponent<TaskNavigationConfig> {
+  @Tag("search-in-comments")
+  public boolean searchInComments = true;
+
   @Tag("configuration")
   public static class SharedConfiguration {
     @Attribute("annotation")
@@ -55,6 +58,7 @@ public class TaskNavigationConfig implements PersistentStateComponent<TaskNaviga
     final TaskNavigationConfig config = new TaskNavigationConfig();
     config.configurations = new ArrayList<SharedConfiguration>();
     config.configurations.addAll(this.configurations);
+    config.searchInComments = this.searchInComments;
     return this;
   }
 
@@ -62,5 +66,6 @@ public class TaskNavigationConfig implements PersistentStateComponent<TaskNaviga
   public void loadState(TaskNavigationConfig state) {
     this.configurations = new ArrayList<SharedConfiguration>();
     this.configurations.addAll(state.configurations);
+    this.searchInComments = state.searchInComments;
   }
 }

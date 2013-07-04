@@ -16,6 +16,10 @@
 
 package com.intellij.tasks.navigation.ui;
 
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.util.containers.ComparatorUtil;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author Vladislav Rassokhin
  */
@@ -35,16 +39,18 @@ public class AnnotationConfig {
     this.myElement = element;
   }
 
+  @NotNull
   public String getAnnotation() {
-    return myAnnotation;
+    return StringUtil.notNullize(myAnnotation);
   }
 
   public void setAnnotation(String annotation) {
     this.myAnnotation = annotation;
   }
 
+  @NotNull
   public String getElement() {
-    return myElement;
+    return StringUtil.notNullize(myElement);
   }
 
   public void setElement(String element) {
@@ -67,8 +73,8 @@ public class AnnotationConfig {
 
     AnnotationConfig that = (AnnotationConfig) o;
 
-    if (myAnnotation != null ? !myAnnotation.equals(that.myAnnotation) : that.myAnnotation != null) return false;
-    if (myElement != null ? !myElement.equals(that.myElement) : that.myElement != null) return false;
+    if (!ComparatorUtil.equalsNullable(myAnnotation, that.myAnnotation)) return false;
+    if (!ComparatorUtil.equalsNullable(myElement, that.myElement)) return false;
 
     return true;
   }
@@ -78,5 +84,10 @@ public class AnnotationConfig {
     int result = myAnnotation != null ? myAnnotation.hashCode() : 0;
     result = 31 * result + (myElement != null ? myElement.hashCode() : 0);
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return getPresentableName();
   }
 }

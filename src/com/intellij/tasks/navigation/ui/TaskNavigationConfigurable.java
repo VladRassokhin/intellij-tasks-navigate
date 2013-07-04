@@ -21,8 +21,6 @@ import com.intellij.openapi.options.BaseConfigurable;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogBuilder;
-import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.tasks.navigation.TaskNavigationConfig;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.AnActionButtonRunnable;
@@ -38,9 +36,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Vladislav Rassokhin
@@ -49,12 +49,12 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
   private JPanel myPanel;
   private JPanel myAnnotationsPanel;
   private JBLabel myLabel;
+  private JCheckBox mySearchInComments;
   private final JBList myConfigurationsList;
 
 
   private final Project myProject;
-  private final List<AnnotationConfig> myConfigurations = new ArrayList<AnnotationConfig>();
-  private final CollectionListModel<AnnotationConfig> myConfigurationsListModel= new CollectionListModel<AnnotationConfig>();;
+  private final CollectionListModel<AnnotationConfig> myConfigurationsListModel = new CollectionListModel<AnnotationConfig>();
 
   public TaskNavigationConfigurable(@NotNull final Project project) {
     myProject = project;
@@ -69,19 +69,11 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
     decorator.setAddAction(new AnActionButtonRunnable() {
       @Override
       public void run(AnActionButton button) {
-        final AnnotationConfigEditForm form = new AnnotationConfigEditForm();
-        form.setData(new AnnotationConfig());
-        final DialogBuilder builder = new DialogBuilder(myProject);
-        builder.setTitle("Add");
-        builder.addOkAction();
-        builder.addCancelAction();
-        builder.setCenterPanel(form.getPanel());
-        builder.setPreferredFocusComponent(form.getPanel());
-        if (builder.show() == DialogWrapper.OK_EXIT_CODE) {
-          final AnnotationConfig newConfig = form.getData();
-          myConfigurations.add(newConfig);
-          myConfigurationsListModel.add(newConfig);
-          setModified(true);
+        final AnnotationConfigEditDialog dialog = new AnnotationConfigEditDialog(myConfigurationsListModel.getItems(), null);
+        if (dialog.showAndGet()) {
+          myConfigurationsListModel.add(dialog.getData());
+          checkModified();
+          myConfigurationsList.repaint();
         }
         myConfigurationsList.requestFocus();
       }
@@ -89,20 +81,13 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
     decorator.setEditAction(new AnActionButtonRunnable() {
       @Override
       public void run(AnActionButton button) {
-        AnnotationConfig config = getSelectedAnnotation();
+        final AnnotationConfig config = getSelectedAnnotation();
         if (config != null) {
-          final AnnotationConfigEditForm form = new AnnotationConfigEditForm();
-          form.setData(config);
-          final DialogBuilder builder = new DialogBuilder(myProject);
-          builder.setTitle("Edit");
-          builder.addOkAction();
-          builder.addCancelAction();
-          builder.setCenterPanel(form.getPanel());
-          builder.setPreferredFocusComponent(form.getPanel());
-          if (builder.show() == DialogWrapper.OK_EXIT_CODE) {
-            if (!config.equals(form.getData())) {
-              config.copyFrom(form.getData());
-              setModified(true);
+          final AnnotationConfigEditDialog dialog = new AnnotationConfigEditDialog(myConfigurationsListModel.getItems(), config);
+          if (dialog.showAndGet()) {
+            if (!config.equals(dialog.getData())) {
+              config.copyFrom(dialog.getData());
+              checkModified();
             }
             myConfigurationsList.repaint();
           }
@@ -116,8 +101,7 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
         AnnotationConfig config = getSelectedAnnotation();
         if (config != null) {
           myConfigurationsListModel.remove(config);
-          myConfigurations.remove(config);
-          setModified(true);
+          checkModified();
         }
       }
     });
@@ -138,6 +122,12 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
         AnnotationConfig config = (AnnotationConfig) value;
         setText(config.getPresentableName());
         return this;
+      }
+    });
+    mySearchInComments.addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(@NotNull ChangeEvent e) {
+        checkModified();
       }
     });
   }
@@ -166,8 +156,8 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
   }
 
   public void apply() throws ConfigurationException {
-    final TaskNavigationConfig config = ServiceManager.getService(myProject, TaskNavigationConfig.class);
-    config.configurations = ContainerUtil.map(myConfigurations, new Function<AnnotationConfig, TaskNavigationConfig.SharedConfiguration>() {
+    final TaskNavigationConfig config = getConfig();
+    config.configurations = ContainerUtil.map(myConfigurationsListModel.getItems(), new Function<AnnotationConfig, TaskNavigationConfig.SharedConfiguration>() {
       @Override
       public TaskNavigationConfig.SharedConfiguration fun(AnnotationConfig config) {
         final TaskNavigationConfig.SharedConfiguration shared = new TaskNavigationConfig.SharedConfiguration();
@@ -176,31 +166,55 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
         return shared;
       }
     });
+    config.searchInComments = mySearchInComments.isSelected();
+    checkModified();
   }
 
   public void reset() {
-    myConfigurations.clear();
-    myConfigurationsListModel.removeAll();
-
-    for (AnnotationConfig config : getConfigs()) {
-      myConfigurations.add(config);
-      myConfigurationsListModel.add(config);
-    }
-  }
-
-  @NotNull
-  private List<AnnotationConfig> getConfigs() {
-    final TaskNavigationConfig config = ServiceManager.getService(myProject, TaskNavigationConfig.class);
-    return ContainerUtil.map(config.configurations, new Function<TaskNavigationConfig.SharedConfiguration, AnnotationConfig>() {
+    final TaskNavigationConfig config = getConfig();
+    final AnnotationConfig selected = (AnnotationConfig) myConfigurationsList.getSelectedValue();
+    myConfigurationsListModel.replaceAll(ContainerUtil.map(config.configurations, new Function<TaskNavigationConfig.SharedConfiguration, AnnotationConfig>() {
       @Override
       public AnnotationConfig fun(TaskNavigationConfig.SharedConfiguration shared) {
         return new AnnotationConfig(shared.annotation, shared.element);
       }
-    });
+    }));
+    if (selected != null) {
+      myConfigurationsList.setSelectedIndex(myConfigurationsListModel.getElementIndex(selected));
+    }
+    mySearchInComments.setSelected(config.searchInComments);
+    checkModified();
+  }
+
+  @NotNull
+  private TaskNavigationConfig getConfig() {
+    return ServiceManager.getService(myProject, TaskNavigationConfig.class);
   }
 
   public void disposeUIResources() {
-    myConfigurations.clear();
     myConfigurationsListModel.removeAll();
+  }
+
+  private void checkModified() {
+    setModified(isModifiedCheckImpl());
+  }
+
+  private boolean isModifiedCheckImpl() {
+    final TaskNavigationConfig config = getConfig();
+    if (mySearchInComments.isSelected() != config.searchInComments) {
+      return true;
+    }
+    if (config.configurations.size() != myConfigurationsListModel.getSize()) {
+      return true;
+    }
+    final Set<AnnotationConfig> configs = new HashSet<AnnotationConfig>();
+    for (TaskNavigationConfig.SharedConfiguration configuration : config.configurations) {
+      configs.add(new AnnotationConfig(configuration.annotation, configuration.element));
+    }
+    configs.removeAll(myConfigurationsListModel.getItems());
+    if (!configs.isEmpty()) {
+      return true;
+    }
+    return false;
   }
 }
