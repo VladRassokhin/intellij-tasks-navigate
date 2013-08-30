@@ -57,7 +57,11 @@ public class TaskNavigationConfig implements PersistentStateComponent<TaskNaviga
   public TaskNavigationConfig getState() {
     final TaskNavigationConfig config = new TaskNavigationConfig();
     config.configurations = new ArrayList<SharedConfiguration>();
-    config.configurations.addAll(this.configurations);
+    for (SharedConfiguration c : this.configurations) {
+      if (c.annotation != null && c.element != null) {
+        config.configurations.add(c);
+      }
+    }
     config.searchInComments = this.searchInComments;
     return this;
   }
@@ -65,7 +69,11 @@ public class TaskNavigationConfig implements PersistentStateComponent<TaskNaviga
   @Override
   public void loadState(TaskNavigationConfig state) {
     this.configurations = new ArrayList<SharedConfiguration>();
-    this.configurations.addAll(state.configurations);
+    for (SharedConfiguration c : state.configurations) {
+      if (c.annotation != null && c.element != null) {
+        this.configurations.add(c);
+      }
+    }
     this.searchInComments = state.searchInComments;
   }
 }

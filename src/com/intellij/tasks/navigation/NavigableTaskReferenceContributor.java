@@ -26,6 +26,7 @@ import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
+import com.intellij.util.containers.ComparatorUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -70,7 +71,8 @@ public class NavigableTaskReferenceContributor extends PsiReferenceContributor {
 
       final Project project = annotation.getProject();
       for (TaskNavigationConfig.SharedConfiguration config : getConfigs(project)) {
-        if (config.element.equals(pair.getName()) && config.annotation.equals(annotation.getQualifiedName())) {
+        if (ComparatorUtil.equalsNullable(config.element, pair.getName())
+            && ComparatorUtil.equalsNullable(config.annotation, annotation.getQualifiedName())) {
           return true;
         }
       }
