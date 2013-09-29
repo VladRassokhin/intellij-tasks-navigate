@@ -19,6 +19,7 @@ package com.intellij.tasks.navigation;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
@@ -51,7 +52,12 @@ class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
     @Nullable
     @Override
     public Result<Map<String, TaskPsiElement>> compute() {
-      return Result.<Map<String, TaskPsiElement>>create(new SoftHashMap<String, TaskPsiElement>());
+      return Result.<Map<String, TaskPsiElement>>create(new SoftHashMap<String, TaskPsiElement>(), new ModificationTracker() {
+        @Override
+        public long getModificationCount() {
+          return 0;
+        }
+      });
     }
   };
 
