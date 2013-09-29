@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>org.intellij.tasks.navigation</id>
   <name>Tasks Navigation</name>
-  <version>0.3.3</version>
+  <version>0.3.4</version>
   <vendor email="Vladislav.Rassokhin@jetbrains.com">Vladislav Rassokhin from JetBrains</vendor>
 
   <depends>com.intellij.modules.platform</depends>
@@ -17,6 +17,8 @@
       ]]></description>
 
   <change-notes><![CDATA[
+      <h4>0.3.4</h4>
+      <p>Fix IDEA 13 EAP compatibility issue (#3)</p>
       <h4>0.3.3</h4>
       <p>Fix NPE</p>
       <h4>0.3.2</h4>
