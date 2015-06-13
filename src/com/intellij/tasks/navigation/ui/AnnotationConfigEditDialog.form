@@ -29,7 +29,7 @@
         </constraints>
         <properties>
           <labelFor value="d1844"/>
-          <text value="Annotation"/>
+          <text value="Annotation class"/>
         </properties>
       </component>
       <component id="f13b8" class="com.intellij.ui.components.JBLabel">
@@ -38,7 +38,7 @@
         </constraints>
         <properties>
           <labelFor value="c534f"/>
-          <text value="Element"/>
+          <text value="Field"/>
         </properties>
       </component>
     </children>
