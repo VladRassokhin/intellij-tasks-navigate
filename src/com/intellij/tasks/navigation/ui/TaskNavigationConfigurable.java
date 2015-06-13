@@ -69,7 +69,7 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
     decorator.setAddAction(new AnActionButtonRunnable() {
       @Override
       public void run(AnActionButton button) {
-        final AnnotationConfigEditDialog dialog = new AnnotationConfigEditDialog(myConfigurationsListModel.getItems(), null);
+        final AnnotationConfigEditDialog dialog = new AnnotationConfigEditDialog(myConfigurationsListModel.getItems(), null, project);
         if (dialog.showAndGet()) {
           myConfigurationsListModel.add(dialog.getData());
           checkModified();
@@ -83,7 +83,7 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
       public void run(AnActionButton button) {
         final AnnotationConfig config = getSelectedAnnotation();
         if (config != null) {
-          final AnnotationConfigEditDialog dialog = new AnnotationConfigEditDialog(myConfigurationsListModel.getItems(), config);
+          final AnnotationConfigEditDialog dialog = new AnnotationConfigEditDialog(myConfigurationsListModel.getItems(), config, project);
           if (dialog.showAndGet()) {
             if (!config.equals(dialog.getData())) {
               config.copyFrom(dialog.getData());
