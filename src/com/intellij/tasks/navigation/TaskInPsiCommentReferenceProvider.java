@@ -34,7 +34,11 @@ class TaskInPsiCommentReferenceProvider extends PsiReferenceProvider {
       return PsiReference.EMPTY_ARRAY;
     }
     final List<TextRange> ranges = new ArrayList<TextRange>();
-    final TaskRepository[] repositories = TaskManager.getManager(comment.getProject()).getAllRepositories();
+    final TaskManager manager = TaskManager.getManager(comment.getProject());
+    if (manager == null) {
+      return PsiReference.EMPTY_ARRAY;
+    }
+    final TaskRepository[] repositories = manager.getAllRepositories();
     for (TaskRepository repository : repositories) {
       int prev = 0;
       String toCheck = text;
