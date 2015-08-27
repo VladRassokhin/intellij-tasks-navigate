@@ -24,6 +24,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PsiLiteralExpressionToTaskReference extends ToTaskReference<PsiLiteralExpression> {
   public PsiLiteralExpressionToTaskReference(@NotNull PsiLiteralExpression element) {
-    super(element, true);
+    super(element);
   }
 }

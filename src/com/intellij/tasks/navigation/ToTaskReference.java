@@ -45,7 +45,7 @@ import java.util.Map;
 /**
  * @author Vladislav.Rassokhin
  */
-class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
+public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
 
   private static final Key<CachedValue<Map<String, TaskPsiElement>>> ISSUE_REFERENCE_CACHE = Key.create("ISSUE_REFERENCE_CACHE");
   private static final CachedValueProvider<Map<String, TaskPsiElement>> CACHED_VALUE_PROVIDER = new CachedValueProvider<Map<String, TaskPsiElement>>() {
@@ -61,20 +61,12 @@ class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
     }
   };
 
-  ToTaskReference(T element, TextRange range, boolean soft) {
-    super(element, range, soft);
+  public ToTaskReference(T element, TextRange range) {
+    super(element, range, true);
   }
 
-  ToTaskReference(T element, TextRange range) {
-    super(element, range);
-  }
-
-  ToTaskReference(T element, boolean soft) {
-    super(element, soft);
-  }
-
-  ToTaskReference(@NotNull T element) {
-    super(element);
+  public ToTaskReference(T element) {
+    super(element, true);
   }
 
   @Nullable

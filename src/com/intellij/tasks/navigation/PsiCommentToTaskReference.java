@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 class PsiCommentToTaskReference extends ToTaskReference<PsiComment> {
 
   PsiCommentToTaskReference(@NotNull final PsiComment element, @NotNull final TextRange range) {
-    super(element, range, true);
+    super(element, range);
   }
 
   @NotNull
