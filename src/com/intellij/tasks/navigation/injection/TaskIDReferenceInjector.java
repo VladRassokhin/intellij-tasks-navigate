@@ -28,13 +28,13 @@ public class TaskIDReferenceInjector extends ReferenceInjector {
   @NotNull
   @Override
   public String getId() {
-    return "task-id-reference";
+    return "task-reference";
   }
 
   @NotNull
   @Override
   public String getDisplayName() {
-    return "Task ID Reference";
+    return "Task Reference";
   }
 
   @NotNull

@@ -101,14 +101,13 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
       return null;
     }
     final Project project = getElement().getProject();
+    final TaskManager manager = TaskManager.getManager(project);
+    if (manager == null) return null;
     final Map<String, TaskPsiElement> cache = CachedValuesManager.getManager(project).getCachedValue(project, ISSUE_REFERENCE_CACHE, CACHED_VALUE_PROVIDER, false);
+    // TODO: Extract id from text before looking into cache
     TaskPsiElement value = cache.get(id);
     if (value == null) {
-      Task founded = null;
-      final TaskManager manager = TaskManager.getManager(project);
-      if (manager != null) {
-        founded = getTask(id, manager);
-      }
+      final Task founded = getTask(id, manager);
       if (founded != null) {
         value = new OpenableTaskPsiElement(PsiManager.getInstance(project), founded);
         cache.put(id, value);
