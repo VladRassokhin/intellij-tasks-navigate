@@ -20,14 +20,8 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.util.xmlb.annotations.AbstractCollection;
-import com.intellij.util.xmlb.annotations.Attribute;
-import com.intellij.util.xmlb.annotations.Property;
 import com.intellij.util.xmlb.annotations.Tag;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Vladislav Rassokhin
@@ -39,41 +33,16 @@ public class TaskNavigationConfig implements PersistentStateComponent<TaskNaviga
   @Tag("search-in-comments")
   public boolean searchInComments = true;
 
-  @Tag("configuration")
-  public static class SharedConfiguration {
-    @Attribute("annotation")
-    public String annotation;
-    @Attribute("element")
-    public String element;
-  }
-
-  @Property(surroundWithTag = false)
-  @AbstractCollection(surroundWithTag = false)
-  public List<SharedConfiguration> configurations = new ArrayList<SharedConfiguration>();
-
-
   @Nullable
   @Override
   public TaskNavigationConfig getState() {
     final TaskNavigationConfig config = new TaskNavigationConfig();
-    config.configurations = new ArrayList<SharedConfiguration>();
-    for (SharedConfiguration c : this.configurations) {
-      if (c.annotation != null && c.element != null) {
-        config.configurations.add(c);
-      }
-    }
     config.searchInComments = this.searchInComments;
     return this;
   }
 
   @Override
   public void loadState(TaskNavigationConfig state) {
-    this.configurations = new ArrayList<SharedConfiguration>();
-    for (SharedConfiguration c : state.configurations) {
-      if (c.annotation != null && c.element != null) {
-        this.configurations.add(c);
-      }
-    }
     this.searchInComments = state.searchInComments;
   }
 }

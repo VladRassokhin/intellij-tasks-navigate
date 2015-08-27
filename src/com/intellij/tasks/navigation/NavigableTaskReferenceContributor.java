@@ -16,9 +16,7 @@
 
 package com.intellij.tasks.navigation;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.*;
@@ -26,29 +24,21 @@ import com.intellij.psi.filters.ElementFilter;
 import com.intellij.psi.filters.position.FilterPattern;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
-import com.intellij.util.containers.ComparatorUtil;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * @author Vladislav Rassokhin
  */
+// TODO: Remove, since it doesn't add any references now
 public class NavigableTaskReferenceContributor extends PsiReferenceContributor {
   static final Logger LOG = Logger.getInstance(NavigableTaskReferenceContributor.class);
-
-  @NotNull
-  private static List<TaskNavigationConfig.SharedConfiguration> getConfigs(@NotNull final Project project) {
-    final TaskNavigationConfig config = ServiceManager.getService(project, TaskNavigationConfig.class);
-    return config.configurations;
-  }
 
   private static PsiElementPattern.Capture<PsiLiteralExpression> getElementPattern() {
     return PlatformPatterns.psiElement(PsiLiteralExpression.class).inside(PsiAnnotationParameterList.class).and(new FilterPattern(new TaskAnnotationFilter()));
   }
 
   @Override
-  public void registerReferenceProviders(PsiReferenceRegistrar registrar) {
+  public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
 
     registrar.registerReferenceProvider(getElementPattern(), new PsiReferenceProvider() {
       @NotNull
@@ -69,13 +59,6 @@ public class NavigableTaskReferenceContributor extends PsiReferenceContributor {
       final PsiAnnotation annotation = PsiTreeUtil.getParentOfType(pair, PsiAnnotation.class);
       if (annotation == null) return false;
 
-      final Project project = annotation.getProject();
-      for (TaskNavigationConfig.SharedConfiguration config : getConfigs(project)) {
-        if (ComparatorUtil.equalsNullable(config.element, pair.getName())
-            && ComparatorUtil.equalsNullable(config.annotation, annotation.getQualifiedName())) {
-          return true;
-        }
-      }
       return false;
     }
 
