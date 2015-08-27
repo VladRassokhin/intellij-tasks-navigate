@@ -17,16 +17,19 @@
 package com.intellij.tasks.navigation;
 
 import com.intellij.ide.BrowserUtil;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiManager;
 import com.intellij.tasks.Task;
 import com.intellij.tasks.doc.TaskPsiElement;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Vladislav.Rassokhin
  */
 class OpenableTaskPsiElement extends TaskPsiElement {
+  static final Logger LOG = Logger.getInstance(OpenableTaskPsiElement.class);
 
-  public OpenableTaskPsiElement(PsiManager psiManager, Task task) {
+  public OpenableTaskPsiElement(@NotNull PsiManager psiManager, @NotNull Task task) {
     super(psiManager, task);
   }
 
@@ -37,7 +40,7 @@ class OpenableTaskPsiElement extends TaskPsiElement {
     if (url != null) {
       BrowserUtil.open(url);
     } else {
-      NavigableTaskReferenceContributor.LOG.info("Url is null for " + task);
+      LOG.warn("Cannot open task in browser: url is null for task :" + task);
     }
   }
 

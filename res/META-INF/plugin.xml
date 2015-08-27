@@ -43,7 +43,6 @@
   <idea-version since-build="129.000"/>
 
   <extensions defaultExtensionNs="com.intellij">
-    <psi.referenceContributor language="JAVA" implementation="com.intellij.tasks.navigation.NavigableTaskReferenceContributor"/>
     <psi.referenceContributor implementation="com.intellij.tasks.navigation.PsiCommentToTaskReferenceContributor"/>
     <lang.documentationProvider language="JAVA" implementationClass="com.intellij.tasks.navigation.NavigableTaskDocumentationProvider"/>
 

@@ -17,6 +17,7 @@
 package com.intellij.tasks.navigation;
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
@@ -46,6 +47,8 @@ import java.util.Map;
  * @author Vladislav.Rassokhin
  */
 public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
+  static final Logger LOG = Logger.getInstance(ToTaskReference.class);
+
 
   private static final Key<CachedValue<Map<String, TaskPsiElement>>> ISSUE_REFERENCE_CACHE = Key.create("ISSUE_REFERENCE_CACHE");
   private static final CachedValueProvider<Map<String, TaskPsiElement>> CACHED_VALUE_PROVIDER = new CachedValueProvider<Map<String, TaskPsiElement>>() {
@@ -88,7 +91,7 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
           return localTask != null ? localTask : issue;
         }
       } catch (Exception e) {
-        NavigableTaskReferenceContributor.LOG.info(e);
+        LOG.info(e);
       }
     }
     return null;
