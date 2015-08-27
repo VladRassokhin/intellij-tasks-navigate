@@ -1,0 +1,5 @@
+<idea-plugin version="2">
+  <extensions defaultExtensionNs="com.intellij">
+    <referenceInjector implementation="com.intellij.tasks.navigation.injection.TaskIDReferenceInjector"/>
+  </extensions>
+</idea-plugin>

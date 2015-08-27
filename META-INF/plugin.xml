@@ -7,6 +7,7 @@
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.tasks</depends>
+  <depends optional="true" config-file="plugin-intellilang.xml">org.intellij.intelliLang</depends>
 
   <description><![CDATA[
       Provides support for navigation to web (in browser) from annotation's string elements (task id's).<br/>
