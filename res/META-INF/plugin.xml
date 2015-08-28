@@ -10,11 +10,13 @@
   <depends optional="true" config-file="plugin-intellilang.xml">org.intellij.intelliLang</depends>
 
   <description><![CDATA[
-    <p>Provides navigation to tasks from comments.</p>
+    <p>
+      Provides navigation to tasks from comments. Quite simple feature, just searches for issue IDs.</p>
     <p>
       Provides support for task id injection (using IntelliLang plugin) into any string, etc. <br/>
       Injection allows to navigate to web (open task/issue in browser)<br/>
       Also code completion for such injection elements provided.
+      For more information about injections, see <a href="https://www.jetbrains.com/idea/help/intellilang.html">related documentation</a>
     </p>
     <p>Dependency on IntelliLang is optional, but highly recommended to install, since it provides nice features.</p>
     ]]></description>
@@ -22,7 +24,7 @@
   <change-notes><![CDATA[
     <h4>0.4.0</h4>
     <p>
-      Migrate to ReferenceInjector to support task id injection. Requires IntelliLang plugin to be installed.<br/>
+      Migrate to ReferenceInjector to support task id injection. Requires IntelliLang plugin to be enabled.<br/>
       As result, annotation based resolving removed.
     </p>
     <p>Some minor improvements</p>
