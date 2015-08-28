@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2015 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiReferenceContributor;
 import com.intellij.psi.PsiReferenceRegistrar;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Vladislav Rassokhin
@@ -27,7 +28,7 @@ import com.intellij.psi.PsiReferenceRegistrar;
 public class PsiCommentToTaskReferenceContributor extends PsiReferenceContributor {
 
   @Override
-  public void registerReferenceProviders(PsiReferenceRegistrar registrar) {
+  public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
     registrar.registerReferenceProvider(PlatformPatterns.psiElement(PsiComment.class), new TaskInPsiCommentReferenceProvider());
   }
 
