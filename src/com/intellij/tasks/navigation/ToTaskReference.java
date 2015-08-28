@@ -22,6 +22,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.ModificationTracker;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReferenceBase;
@@ -72,8 +73,15 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
     super(element, true);
   }
 
+  /**
+   * Is task should be resolved if it's ID is not matches with input text
+   */
+  protected boolean isAllowPartialMatch() {
+    return false;
+  }
+
   @Nullable
-  static Task getTask(@NotNull final String id, @NotNull final TaskManager manager) {
+  private Task getTask(@NotNull final String id, @NotNull final String text, @NotNull final TaskManager manager) {
     for (Task task : manager.getCachedIssues(true)) {
       if (id.equals(task.getId())) {
         LocalTask localTask = manager.findTask(id);
@@ -81,9 +89,11 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
       }
     }
     for (TaskRepository repository : manager.getAllRepositories()) {
-      if (repository.extractId(id) == null) {
+      final String id2 = repository.extractId(text);
+      if (id2 == null) {
         continue;
       }
+      if (!id2.equals(id)) continue;
       try {
         Task issue = repository.findTask(id);
         if (issue != null) {
@@ -97,20 +107,57 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
     return null;
   }
 
+  private static String getId(@NotNull final String text, @NotNull final TaskManager manager) {
+    for (Task task : manager.getCachedIssues(true)) {
+      if (task.getId().equals(text)) return task.getId();
+      final TaskRepository repository = task.getRepository();
+      if (repository != null) {
+        final String id = repository.extractId(text);
+        if (id != null) {
+          return id;
+        }
+      }
+    }
+    for (Task task : manager.getLocalTasks(true)) {
+      if (task.getId().equals(text)) return task.getId();
+      final TaskRepository repository = task.getRepository();
+      if (repository != null) {
+        final String id = repository.extractId(text);
+        if (id != null) {
+          return id;
+        }
+      }
+    }
+    for (TaskRepository repository : manager.getAllRepositories()) {
+      final String id = repository.extractId(text);
+      if (id != null) return id;
+    }
+    return null;
+  }
+
   @Nullable
   public PsiElement resolve() {
-    @NonNls String id = getValue();
-    if (id.isEmpty()) {
+    @NonNls String text = getValue();
+    if (text.isEmpty()) {
       return null;
     }
     final Project project = getElement().getProject();
     final TaskManager manager = TaskManager.getManager(project);
     if (manager == null) return null;
     final Map<String, TaskPsiElement> cache = CachedValuesManager.getManager(project).getCachedValue(project, ISSUE_REFERENCE_CACHE, CACHED_VALUE_PROVIDER, false);
-    // TODO: Extract id from text before looking into cache
+    final String id = getId(text, manager);
+    if (id == null) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Cannot determine id for '" + StringUtil.shortenPathWithEllipsis(text, 50) + "'");
+      }
+      return null;
+    }
+    if (!id.equals(text) && !isAllowPartialMatch()) {
+      return null;
+    }
     TaskPsiElement value = cache.get(id);
     if (value == null) {
-      final Task founded = getTask(id, manager);
+      final Task founded = getTask(id, text, manager);
       if (founded != null) {
         value = new OpenableTaskPsiElement(PsiManager.getInstance(project), founded);
         cache.put(id, value);
@@ -130,7 +177,7 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
       for (Task task : manager.getLocalTasks()) {
         tasks.add(task);
       }
-      for (Task task : manager.getIssues(null)) {
+      for (Task task : manager.getIssues(null, false)) {
         tasks.add(task);
       }
       for (Task task : tasks) {
