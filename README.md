@@ -1,11 +1,18 @@
 # intellij-tasks-navigate
 
 Plugin for [IntelliJ Platform](http://www.jetbrains.org/pages/viewpage.action?pageId=983889) based IDEs.
+
 Adds support for navigation from comments and any injection host (IntelliLang) to tasks (issues) in Web.
+
+Plugin could be directly installed in any modern IntelliJ based IDE: IntelliJIDEA, Android Studio, RubyMine, PyCharm, WebStorm, PHPStorm, etc.
+Or from [releases](https://github.com/VladRassokhin/intellij-tasks-navigate/releases) page. 
+
+Also see [plugin page](https://plugins.jetbrains.com/plugin/7241) in IntelliJ plugins repository. 
 
 ## Usage
 
 First you have to setup some tasks server in `Settings | Tools | Tasks | Servers` (YouTrack, Jira, GitHub or another server)
+
 Example: YouTrack with `https://youtrack.jetbrains.com` url.
 
 ### Navigation from comments
@@ -35,6 +42,7 @@ public class Example {
 }
 ```
 You could set caret on `IDEA-62743` and add `Task Reference` reference using `Inject language or reference` intention.
+
 Then `Ctrl+Click` or `Go to declaration` on `IDEA-62743` would open browser on `https://youtrack.jetbrains.com/issue/IDEA-62743` page
 
 This feature better to be used with custom annotations (in Java):
@@ -65,6 +73,7 @@ public class TestClass {
 ```
 
 Once you `Inject language or reference` on any usage of `TestFor#issues` any other usage would also have such injection.
+
 Also injection could be setup in setting and stored in project files, read IntelliLang [documentation](https://www.jetbrains.com/idea/help/intellilang.html) for more info.
 
 Also quick documentation for string literals with injection is available.
