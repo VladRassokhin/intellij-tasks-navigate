@@ -1,1 +1,12 @@
 out/
+
+#.idea/libraries/
+.idea/workspace.xml
+.idea/uiDesigner.xml
+out/
+build/
+config-test/
+system-test/
+*.iml
+.gradle/
+idea-sandbox/
