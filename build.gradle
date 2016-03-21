@@ -1,0 +1,91 @@
+/*
+ * Copyright 2000-2016 JetBrains s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repository.jetbrains.com/repo/"}
+    }
+}
+
+plugins {
+    id "org.jetbrains.intellij" version "0.0.43"
+}
+
+version = '0.4.0'
+if (System.hasProperty('build.number')) {
+    version = "$version.${System.getProperty("build.number")}"
+}
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    maven { url "http://repository.jetbrains.com/repo/"}
+}
+
+apply plugin: 'org.jetbrains.intellij'
+
+intellij {
+    version '14.0.4'
+    plugins 'tasks'
+    pluginName 'org.intellij.tasks.navigation'
+    sandboxDirectory="${project.projectDir}/idea-sandbox"
+    updateSinceUntilBuild = false
+
+    publish {
+        pluginId '7241'
+//        username ''
+//        password ''
+//        channel ''
+    }
+}
+
+// To prevent weird classpath problems in idea
+clean {
+    delete "${intellij.sandboxDirectory}/plugins/${intellij.pluginName}"
+}
+
+sourceCompatibility = "1.6"
+targetCompatibility = "1.6"
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src'
+        }
+        resources {
+            srcDir 'res'
+        }
+    }
+    test {
+        java {
+            srcDir 'test'
+        }
+        resources {
+            srcDir 'test-data'
+        }
+    }
+}
+
+if (System.getenv("TEAMCITY_VERSION") != null) {
+    test.ignoreFailures = true
+} else {
+//test.testLogging.showStandardStreams = true
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.12'
+}
