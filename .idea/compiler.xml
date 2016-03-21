@@ -18,6 +18,11 @@
         <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="intellij-tasks-navigate_main" target="1.6" />
+      <module name="intellij-tasks-navigate_test" target="1.6" />
+      <module name="issues-navigate_main" target="1.6" />
+      <module name="issues-navigate_test" target="1.6" />
+    </bytecodeTargetLevel>
   </component>
 </project>
-
