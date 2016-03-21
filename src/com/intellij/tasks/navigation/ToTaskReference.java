@@ -16,6 +16,7 @@
 
 package com.intellij.tasks.navigation;
 
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -34,12 +35,12 @@ import com.intellij.tasks.Task;
 import com.intellij.tasks.TaskManager;
 import com.intellij.tasks.TaskRepository;
 import com.intellij.tasks.doc.TaskPsiElement;
+import com.intellij.util.SmartList;
 import com.intellij.util.containers.SoftHashMap;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -168,21 +169,21 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
 
   @NotNull
   public Object[] getVariants() {
-    final List<Object> list = new ArrayList<Object>();
     final TaskManager manager = TaskManager.getManager(getElement().getProject());
+    if (manager == null) return EMPTY_ARRAY;
     final LinkedHashSet<Task> tasks = new LinkedHashSet<Task>();
-    if (manager != null) {
-      final LocalTask active = manager.getActiveTask();
-      tasks.add(active);
-      for (Task task : manager.getLocalTasks()) {
-        tasks.add(task);
-      }
-      for (Task task : manager.getIssues(null, false)) {
-        tasks.add(task);
-      }
-      for (Task task : tasks) {
-        list.add(LookupElementBuilder.create(task, task.getId()));
-      }
+    final LocalTask active = manager.getActiveTask();
+    tasks.add(active);
+    for (Task task : manager.getLocalTasks()) {
+      tasks.add(task);
+    }
+    for (Task task : manager.getIssues(null, false)) {
+      tasks.add(task);
+    }
+    if (tasks.isEmpty()) return EMPTY_ARRAY;
+    final List<LookupElement> list = new SmartList<LookupElement>();
+    for (Task task : tasks) {
+      list.add(LookupElementBuilder.create(task, task.getId()).withPresentableText(task.getPresentableName()));
     }
     return list.toArray();
   }
