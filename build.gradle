@@ -44,13 +44,6 @@ intellij {
     pluginName 'org.intellij.tasks.navigation'
     sandboxDirectory="${project.projectDir}/idea-sandbox"
     updateSinceUntilBuild = false
-
-    publish {
-        pluginId '7241'
-//        username ''
-//        password ''
-//        channel ''
-    }
 }
 
 // To prevent weird classpath problems in idea
