@@ -49,12 +49,12 @@ import java.util.Map;
  * @author Vladislav.Rassokhin
  */
 public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
-  static final Logger LOG = Logger.getInstance(ToTaskReference.class);
+  private static final Logger LOG = Logger.getInstance(ToTaskReference.class);
 
 
   private static final Key<CachedValue<Map<String, TaskPsiElement>>> ISSUE_REFERENCE_CACHE = Key.create("ISSUE_REFERENCE_CACHE");
   private static final CachedValueProvider<Map<String, TaskPsiElement>> CACHED_VALUE_PROVIDER = new CachedValueProvider<Map<String, TaskPsiElement>>() {
-    @Nullable
+    @NotNull
     @Override
     public Result<Map<String, TaskPsiElement>> compute() {
       return Result.<Map<String, TaskPsiElement>>create(new SoftHashMap<String, TaskPsiElement>(), new ModificationTracker() {
@@ -174,12 +174,9 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
     final LinkedHashSet<Task> tasks = new LinkedHashSet<Task>();
     final LocalTask active = manager.getActiveTask();
     tasks.add(active);
-    for (Task task : manager.getLocalTasks()) {
-      tasks.add(task);
-    }
-    for (Task task : manager.getIssues(null, false)) {
-      tasks.add(task);
-    }
+    tasks.addAll(manager.getLocalTasks());
+    tasks.addAll(manager.getIssues(null, false));
+
     if (tasks.isEmpty()) return EMPTY_ARRAY;
     final List<LookupElement> list = new SmartList<LookupElement>();
     for (Task task : tasks) {

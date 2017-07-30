@@ -45,16 +45,19 @@ class TaskInPsiCommentReferenceProvider extends PsiReferenceProvider {
     if (!config.searchInComments) {
       return PsiReference.EMPTY_ARRAY;
     }
-    final String text = comment.getText();
-    if (text== null) {
+    if (comment.getTextLength() == 0) {
       return PsiReference.EMPTY_ARRAY;
     }
-    final List<TextRange> ranges = new ArrayList<TextRange>();
     final TaskManager manager = TaskManager.getManager(comment.getProject());
     if (manager == null) {
       return PsiReference.EMPTY_ARRAY;
     }
     final TaskRepository[] repositories = manager.getAllRepositories();
+    if (repositories.length == 0) {
+      return PsiReference.EMPTY_ARRAY;
+    }
+    final String text = comment.getText();
+    final List<TextRange> ranges = new ArrayList<TextRange>();
     for (TaskRepository repository : repositories) {
       int prev = 0;
       String toCheck = text;
@@ -72,15 +75,14 @@ class TaskInPsiCommentReferenceProvider extends PsiReferenceProvider {
         toCheck = text.substring(prev);
       }
     }
-
+    if (ranges.isEmpty()) {
+      return PsiReference.EMPTY_ARRAY;
+    }
     // TODO: Check intersecting ranges (between many TaskRepositories)
 
-    final List<PsiCommentToTaskReference> references = new ArrayList<PsiCommentToTaskReference>();
+    final List<PsiCommentToTaskReference> references = new ArrayList<PsiCommentToTaskReference>(ranges.size());
     for (TextRange range : ranges) {
       references.add(new PsiCommentToTaskReference(comment, range));
-    }
-    if (references.isEmpty()) {
-      return PsiReference.EMPTY_ARRAY;
     }
     return references.toArray(new PsiReference[references.size()]);
   }
