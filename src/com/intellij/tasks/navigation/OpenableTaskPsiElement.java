@@ -18,16 +18,20 @@ package com.intellij.tasks.navigation;
 
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiManager;
 import com.intellij.tasks.Task;
+import com.intellij.tasks.TaskRepository;
 import com.intellij.tasks.doc.TaskPsiElement;
+import com.intellij.tasks.youtrack.YouTrackRepository;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Vladislav.Rassokhin
  */
 class OpenableTaskPsiElement extends TaskPsiElement {
-  static final Logger LOG = Logger.getInstance(OpenableTaskPsiElement.class);
+  private static final Logger LOG = Logger.getInstance(OpenableTaskPsiElement.class);
 
   public OpenableTaskPsiElement(@NotNull PsiManager psiManager, @NotNull Task task) {
     super(psiManager, task);
@@ -36,6 +40,15 @@ class OpenableTaskPsiElement extends TaskPsiElement {
   @Override
   public void navigate(boolean b) {
     final Task task = getTask();
+    TaskRepository repository = task.getRepository();
+    if (repository instanceof YouTrackRepository) {
+      ToolWindowManager manager = ToolWindowManager.getInstance(getProject());
+      ToolWindow toolWindow = manager.getToolWindow("YouTrack");
+      if (toolWindow != null) {
+        // TODO: Add some logic
+      }
+    }
+
     final String url = task.getIssueUrl();
     if (url != null) {
       BrowserUtil.open(url);
