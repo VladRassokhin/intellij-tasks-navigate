@@ -50,7 +50,7 @@
       ]]>
   </change-notes>
 
-  <idea-version since-build="129.000"/>
+  <idea-version since-build="141.000"/>
 
   <extensions defaultExtensionNs="com.intellij">
     <psi.referenceContributor implementation="com.intellij.tasks.navigation.PsiCommentToTaskReferenceContributor"/>

@@ -39,7 +39,7 @@ repositories {
 apply plugin: 'org.jetbrains.intellij'
 
 intellij {
-    version '14.0.4'
+    version '14.1.7'
     plugins 'tasks'
     pluginName 'org.intellij.tasks.navigation'
     sandboxDirectory="${project.projectDir}/idea-sandbox"
