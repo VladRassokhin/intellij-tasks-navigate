@@ -16,10 +16,9 @@
 
 package com.intellij.tasks.navigation;
 
+import com.github.jk1.ytplugin.YouTrackPluginApi;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiManager;
 import com.intellij.tasks.Task;
 import com.intellij.tasks.TaskRepository;
@@ -42,10 +41,10 @@ class OpenableTaskPsiElement extends TaskPsiElement {
     final Task task = getTask();
     TaskRepository repository = task.getRepository();
     if (repository instanceof YouTrackRepository) {
-      ToolWindowManager manager = ToolWindowManager.getInstance(getProject());
-      ToolWindow toolWindow = manager.getToolWindow("YouTrack");
-      if (toolWindow != null) {
-        // TODO: Add some logic
+      YouTrackPluginApi component = getProject().getComponent(YouTrackPluginApi.class);
+      if (component != null) {
+        component.openIssueInToolWidow(task.getId());
+        return;
       }
     }
 

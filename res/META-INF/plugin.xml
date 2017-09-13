@@ -8,6 +8,7 @@
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.tasks</depends>
   <depends optional="true" config-file="plugin-intellilang.xml">org.intellij.intelliLang</depends>
+  <depends optional="true" config-file="plugin-youtrack.xml">com.github.jk1.ytplugin</depends>
 
   <description><![CDATA[
     <p>

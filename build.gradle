@@ -40,7 +40,7 @@ apply plugin: 'org.jetbrains.intellij'
 
 intellij {
     version '2018.1'
-    plugins 'tasks'
+    plugins = ['tasks', 'com.github.jk1.ytplugin:0.9.1']
     pluginName 'org.intellij.tasks.navigation'
     sandboxDirectory="${project.projectDir}/idea-sandbox"
     updateSinceUntilBuild = false
