@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2017 JetBrains s.r.o.
+ * Copyright 2000-2019 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,40 @@
  */
 
 package com.github.jk1.ytplugin;
+
 import com.intellij.openapi.project.Project;
+
+import java.lang.reflect.Method;
 
 public class YouTrackPluginApiWrapper {
 
+  private static final Class<?> ourYouTrackPluginApiClass;
+  private static final Method ourOpenIssueInToolWidowMethod;
+
+  static {
+    Method method = null;
+    Class<?> clazz = null;
+    try {
+      clazz = Class.forName("com.github.jk1.ytplugin.YouTrackPluginApi");
+      method = clazz.getDeclaredMethod("openIssueInToolWidow", String.class);
+      method.setAccessible(true);
+    } catch (Throwable ignored) {
+    }
+    ourYouTrackPluginApiClass = clazz;
+    ourOpenIssueInToolWidowMethod = method;
+  }
+
+
   public static boolean open(Project project, String id) {
-    YouTrackPluginApi component = project.getComponent(YouTrackPluginApi.class);
-    if (component != null) {
-      component.openIssueInToolWidow(id);
-      return true;
+    if (ourYouTrackPluginApiClass != null) {
+      Object component = project.getComponent(ourYouTrackPluginApiClass);
+      if (component != null) {
+        try {
+          ourOpenIssueInToolWidowMethod.invoke(component, id);
+          return true;
+        } catch (Throwable ignored) {
+        }
+      }
     }
     return false;
   }
