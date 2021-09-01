@@ -36,7 +36,7 @@ import com.intellij.tasks.TaskManager;
 import com.intellij.tasks.TaskRepository;
 import com.intellij.tasks.doc.TaskPsiElement;
 import com.intellij.util.SmartList;
-import com.intellij.util.containers.SoftHashMap;
+import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +57,7 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
     @NotNull
     @Override
     public Result<Map<String, TaskPsiElement>> compute() {
-      return Result.<Map<String, TaskPsiElement>>create(new SoftHashMap<String, TaskPsiElement>(), new ModificationTracker() {
+      return Result.<Map<String, TaskPsiElement>>create(ContainerUtil.createSoftMap(), new ModificationTracker() {
         @Override
         public long getModificationCount() {
           return 0;
