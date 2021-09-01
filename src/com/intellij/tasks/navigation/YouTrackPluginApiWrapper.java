@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2019 JetBrains s.r.o.
+ * Copyright 2000-2021 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.jk1.ytplugin;
+package com.intellij.tasks.navigation;
 
 import com.intellij.openapi.project.Project;
 
@@ -31,7 +31,6 @@ public class YouTrackPluginApiWrapper {
     try {
       clazz = Class.forName("com.github.jk1.ytplugin.YouTrackPluginApi");
       method = clazz.getDeclaredMethod("openIssueInToolWidow", String.class);
-      method.setAccessible(true);
     } catch (Throwable ignored) {
     }
     ourYouTrackPluginApiClass = clazz;
@@ -41,6 +40,14 @@ public class YouTrackPluginApiWrapper {
 
   public static boolean open(Project project, String id) {
     if (ourYouTrackPluginApiClass != null) {
+      Object service = project.getServiceIfCreated(ourYouTrackPluginApiClass);
+      if (service != null) {
+        try {
+          ourOpenIssueInToolWidowMethod.invoke(service, id);
+          return true;
+        } catch (Throwable ignored) {
+        }
+      }
       Object component = project.getComponent(ourYouTrackPluginApiClass);
       if (component != null) {
         try {

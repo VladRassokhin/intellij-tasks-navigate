@@ -24,7 +24,7 @@ plugins {
     id "org.jetbrains.intellij" version "0.7.3"
 }
 
-version = '0.5.0'
+version = '0.5.1'
 if (System.hasProperty('build.number')) {
     version = "$version.${System.getProperty("build.number")}"
 }
@@ -36,8 +36,8 @@ repositories {
 apply plugin: 'org.jetbrains.intellij'
 
 intellij {
-    version '2018.1'
-    plugins = ['tasks', 'com.github.jk1.ytplugin:0.9.1']
+    version '2021.2'
+    plugins = ['tasks', 'com.github.jk1.ytplugin:1.2.0']
     pluginName 'org.intellij.tasks.navigation'
     sandboxDirectory="${project.projectDir}/idea-sandbox"
     updateSinceUntilBuild = false
@@ -48,8 +48,8 @@ clean {
     delete "${intellij.sandboxDirectory}/plugins/${intellij.pluginName}"
 }
 
-sourceCompatibility = "1.6"
-targetCompatibility = "1.6"
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
 sourceSets {
     main {

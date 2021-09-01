@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2015 JetBrains s.r.o.
+ * Copyright 2000-2021 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,13 @@ package com.intellij.tasks.navigation;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.util.xmlb.annotations.Tag;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Vladislav Rassokhin
  */
-@State(
-    name = "TaskNavigationConfig",
-    storages = {@Storage(file = StoragePathMacros.PROJECT_FILE)})
+@State(name = "TaskNavigationConfig")
 public class TaskNavigationConfig implements PersistentStateComponent<TaskNavigationConfig> {
   @Tag("search-in-comments")
   public boolean searchInComments = true;

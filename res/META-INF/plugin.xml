@@ -1,7 +1,7 @@
-<idea-plugin version="2">
+<idea-plugin>
   <id>org.intellij.tasks.navigation</id>
   <name>Tasks Navigation</name>
-  <version>0.5.0</version>
+  <version>0.5.1</version>
   <vendor email="Vladislav.Rassokhin@jetbrains.com">Vladislav Rassokhin from JetBrains</vendor>
 
   <depends>com.intellij.modules.platform</depends>
@@ -23,6 +23,8 @@
     ]]></description>
 
   <change-notes><![CDATA[
+    <h4>0.5.1</h4>
+    <p>Fix compatibility with 2021.3</p>
     <h4>0.5.0</h4>
     <p>Integrate with <a href="https://plugins.jetbrains.com/plugin/8215-youtrack-integration">YouTrack plugin</a>,
       'Open Declaration' on tasks now shows 'YouTrack' tool window with issue details. <a
@@ -56,7 +58,7 @@
       ]]>
   </change-notes>
 
-  <idea-version since-build="181.000"/>
+  <idea-version since-build="212.000"/>
 
   <extensions defaultExtensionNs="com.intellij">
     <psi.referenceContributor implementation="com.intellij.tasks.navigation.PsiCommentToTaskReferenceContributor"/>
