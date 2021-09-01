@@ -40,6 +40,6 @@ public class TaskIDReferenceInjector extends ReferenceInjector {
   @NotNull
   @Override
   public PsiReference[] getReferences(@NotNull PsiElement element, @NotNull ProcessingContext context, @NotNull TextRange range) {
-    return new PsiReference[]{new ToTaskReference<PsiElement>(element)};
+    return new PsiReference[]{new ToTaskReference<>(element)};
   }
 }

@@ -16,18 +16,14 @@
 
 package com.intellij.tasks.navigation.ui;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.BaseConfigurable;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.tasks.navigation.TaskNavigationConfig;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  * @author Vladislav Rassokhin
@@ -41,12 +37,7 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
   public TaskNavigationConfigurable(@NotNull final Project project) {
     myProject = project;
 
-    mySearchInComments.addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(@NotNull ChangeEvent e) {
-        checkModified();
-      }
-    });
+    mySearchInComments.addChangeListener(e -> checkModified());
   }
 
   @Nls
@@ -67,7 +58,7 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
     return mySearchInComments;
   }
 
-  public void apply() throws ConfigurationException {
+  public void apply() {
     final TaskNavigationConfig config = getConfig();
 
     config.searchInComments = mySearchInComments.isSelected();
@@ -85,7 +76,7 @@ public class TaskNavigationConfigurable extends BaseConfigurable implements Conf
 
   @NotNull
   private TaskNavigationConfig getConfig() {
-    return ServiceManager.getService(myProject, TaskNavigationConfig.class);
+    return myProject.getService(TaskNavigationConfig.class);
   }
 
   public void disposeUIResources() {

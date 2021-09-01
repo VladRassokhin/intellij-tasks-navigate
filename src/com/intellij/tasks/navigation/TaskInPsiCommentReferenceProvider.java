@@ -16,7 +16,7 @@
 
 package com.intellij.tasks.navigation;
 
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
@@ -41,14 +41,15 @@ class TaskInPsiCommentReferenceProvider extends PsiReferenceProvider {
       return PsiReference.EMPTY_ARRAY;
     }
     final PsiComment comment = (PsiComment) element;
-    final TaskNavigationConfig config = ServiceManager.getService(comment.getProject(), TaskNavigationConfig.class);
+    final Project project = comment.getProject();
+    final TaskNavigationConfig config = project.getService(TaskNavigationConfig.class);
     if (!config.searchInComments) {
       return PsiReference.EMPTY_ARRAY;
     }
     if (comment.getTextLength() == 0) {
       return PsiReference.EMPTY_ARRAY;
     }
-    final TaskManager manager = TaskManager.getManager(comment.getProject());
+    final TaskManager manager = TaskManager.getManager(project);
     if (manager == null) {
       return PsiReference.EMPTY_ARRAY;
     }
@@ -57,7 +58,7 @@ class TaskInPsiCommentReferenceProvider extends PsiReferenceProvider {
       return PsiReference.EMPTY_ARRAY;
     }
     final String text = comment.getText();
-    final List<TextRange> ranges = new ArrayList<TextRange>();
+    final List<TextRange> ranges = new ArrayList<>();
     for (TaskRepository repository : repositories) {
       int prev = 0;
       String toCheck = text;
@@ -80,10 +81,10 @@ class TaskInPsiCommentReferenceProvider extends PsiReferenceProvider {
     }
     // TODO: Check intersecting ranges (between many TaskRepositories)
 
-    final List<PsiCommentToTaskReference> references = new ArrayList<PsiCommentToTaskReference>(ranges.size());
+    final List<PsiCommentToTaskReference> references = new ArrayList<>(ranges.size());
     for (TextRange range : ranges) {
       references.add(new PsiCommentToTaskReference(comment, range));
     }
-    return references.toArray(new PsiReference[references.size()]);
+    return references.toArray(new PsiReference[0]);
   }
 }

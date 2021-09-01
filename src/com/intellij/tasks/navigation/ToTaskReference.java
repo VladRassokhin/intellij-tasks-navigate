@@ -53,18 +53,7 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
 
 
   private static final Key<CachedValue<Map<String, TaskPsiElement>>> ISSUE_REFERENCE_CACHE = Key.create("ISSUE_REFERENCE_CACHE");
-  private static final CachedValueProvider<Map<String, TaskPsiElement>> CACHED_VALUE_PROVIDER = new CachedValueProvider<Map<String, TaskPsiElement>>() {
-    @NotNull
-    @Override
-    public Result<Map<String, TaskPsiElement>> compute() {
-      return Result.<Map<String, TaskPsiElement>>create(ContainerUtil.createSoftMap(), new ModificationTracker() {
-        @Override
-        public long getModificationCount() {
-          return 0;
-        }
-      });
-    }
-  };
+  private static final CachedValueProvider<Map<String, TaskPsiElement>> CACHED_VALUE_PROVIDER = () -> CachedValueProvider.Result.create(ContainerUtil.createSoftMap(), (ModificationTracker) () -> 0);
 
   public ToTaskReference(T element, TextRange range) {
     super(element, range, true);
@@ -108,30 +97,31 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
     return null;
   }
 
+  @Nullable
   private static String getId(@NotNull final String text, @NotNull final TaskManager manager) {
-    for (Task task : manager.getCachedIssues(true)) {
-      if (task.getId().equals(text)) return task.getId();
-      final TaskRepository repository = task.getRepository();
-      if (repository != null) {
-        final String id = repository.extractId(text);
-        if (id != null) {
-          return id;
-        }
-      }
-    }
-    for (Task task : manager.getLocalTasks(true)) {
-      if (task.getId().equals(text)) return task.getId();
-      final TaskRepository repository = task.getRepository();
-      if (repository != null) {
-        final String id = repository.extractId(text);
-        if (id != null) {
-          return id;
-        }
-      }
-    }
+    String id;
+    id = findTaskId(text, manager.getCachedIssues(true));
+    if (id != null) return id;
+    id = findTaskId(text, manager.getLocalTasks(true));
+    if (id != null) return id;
     for (TaskRepository repository : manager.getAllRepositories()) {
-      final String id = repository.extractId(text);
+      id = repository.extractId(text);
       if (id != null) return id;
+    }
+    return null;
+  }
+
+  @Nullable
+  private static String findTaskId(@NotNull String text, List<? extends Task> issues) {
+    for (Task task : issues) {
+      if (task.getId().equals(text)) return task.getId();
+      final TaskRepository repository = task.getRepository();
+      if (repository != null) {
+        final String id = repository.extractId(text);
+        if (id != null) {
+          return id;
+        }
+      }
     }
     return null;
   }
@@ -171,14 +161,14 @@ public class ToTaskReference<T extends PsiElement> extends PsiReferenceBase<T> {
   public Object[] getVariants() {
     final TaskManager manager = TaskManager.getManager(getElement().getProject());
     if (manager == null) return EMPTY_ARRAY;
-    final LinkedHashSet<Task> tasks = new LinkedHashSet<Task>();
+    final LinkedHashSet<Task> tasks = new LinkedHashSet<>();
     final LocalTask active = manager.getActiveTask();
     tasks.add(active);
     tasks.addAll(manager.getLocalTasks());
     tasks.addAll(manager.getIssues(null, false));
 
     if (tasks.isEmpty()) return EMPTY_ARRAY;
-    final List<LookupElement> list = new SmartList<LookupElement>();
+    final List<LookupElement> list = new SmartList<>();
     for (Task task : tasks) {
       list.add(LookupElementBuilder.create(task, task.getId()).withPresentableText(task.getPresentableName()));
     }
