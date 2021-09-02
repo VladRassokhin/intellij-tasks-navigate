@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/intellij-tasks-navigate.iml" filepath="$PROJECT_DIR$/.idea/modules/intellij-tasks-navigate.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/intellij-tasks-navigate_main.iml" filepath="$PROJECT_DIR$/.idea/modules/intellij-tasks-navigate_main.iml" group="intellij-tasks-navigate" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/intellij-tasks-navigate_test.iml" filepath="$PROJECT_DIR$/.idea/modules/intellij-tasks-navigate_test.iml" group="intellij-tasks-navigate" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/intellij-tasks-navigate.main.iml" filepath="$PROJECT_DIR$/.idea/modules/intellij-tasks-navigate.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/intellij-tasks-navigate.test.iml" filepath="$PROJECT_DIR$/.idea/modules/intellij-tasks-navigate.test.iml" />
     </modules>
   </component>
 </project>
